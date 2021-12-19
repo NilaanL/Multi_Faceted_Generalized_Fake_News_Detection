@@ -5,3 +5,13 @@ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0
 vaderSentiment
 transformers
 langdetect
+pandas
+time
+sklearn
+torch
+numpy
+pickle
+re
+matplotlib
+seaborn
+

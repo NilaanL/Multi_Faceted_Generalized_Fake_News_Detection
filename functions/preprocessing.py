@@ -97,3 +97,10 @@ def remove_emoji(string):
                            "]+", flags=re.UNICODE)
     return emoji_pattern.sub(r'', string)
 # -------------------------------------------------------------------------------
+def label_map(x):
+  if (x in ["real","Real","REAL"]): 
+    return 0
+  elif (x in ["fake","Fake","FAKE"]): 
+    return 1
+  else: 
+    return x
