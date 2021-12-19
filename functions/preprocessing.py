@@ -27,7 +27,7 @@ def count_digits(text):
     Taking digits count 
     count afte url removal
     '''
-  return sum(c.isdigit() for c in text)
+    return sum(c.isdigit() for c in text)
 # -------------------------------------------------------------------------------
 
 def count_numbers(text):
@@ -36,8 +36,8 @@ def count_numbers(text):
     Taking numbers count 
     count afte url removal
     '''
-  tokens = text.split()
-  return sum(c.isnumeric() for c in tokens)
+    tokens = text.split()
+    return sum(c.isnumeric() for c in tokens)
 # -------------------------------------------------------------------------------
 
 puncList = ['!', "," ,"\'" ,";" ,"\"", ".", "-" ,"?",':','_']
@@ -79,7 +79,7 @@ def rem_mul_space(text):
     '''
     remove multiple spaces
     '''
-  return " ".join(text.split())
+    return " ".join(text.split())
 # -------------------------------------------------------------------------------
 
 def remove_emoji(string):
