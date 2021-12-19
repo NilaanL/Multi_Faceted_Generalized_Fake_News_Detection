@@ -114,3 +114,90 @@ def generate_embeddings(sentences):
     embeddings=[torch.from_numpy(item) for item in embeddings]
     
     return embeddings
+
+def convert_to_array(tensor):
+  return tensor.detach().cpu().numpy().tolist()
+
+def get_tokens(text):
+  return len(re.findall(r'\w+', text))
+
+def get_train_valid_test_split(dataframe,key,columns,train_size=0.7,valid_size=0.2,test_size=0.1):
+    """split dataframe into train,validation and test sets
+
+    Args:
+        dataframe (Pandas.DataFrame): [description]
+        key ([type]): [description]
+        columns ([type]): [description]
+        train_size (float, optional): [description]. Defaults to 0.7.
+        valid_size (float, optional): [description]. Defaults to 0.2.
+        test_size (float, optional): [description]. Defaults to 0.1.
+    Returns:
+        [list]: List of train,validation and test dataframes
+    """
+  # print(dataframe.columns)
+#   columns=['fake_score', 'true_score', 'common_score',
+#               'joy', 'fear', 'disgust', 'anticipation', 'anger', 'sadness', 'surprise', 'trust',
+#               'url_count', 'qn_symbol', 'num_chars', 'num_words', 'num_sentences', 'words_per_sentence', 'characters_per_word', 
+#               'punctuations_per_sentence', 'num_exclamation', 'get_sentiment_polarity', 'lexical_diversity', 'content_word_diversity',
+#               'redundancy', 'noun', 'verb', 'adj', 'adv', 'qn_symbol_per_sentence', 'num_exclamation_per_sentence',
+#               'url_count_per_sentence', 'embedding']
+
+    dff=dataframe
+    if key=="liar":
+        train = dff.loc[dff["split_Sementic"]=="train"]
+        valid = dff.loc[dff["split_Sementic"]=="valid"]
+        test = dff.loc[dff["split_Sementic"]=="test"]
+
+        X_train_1 = train[columns]
+        y_train_1 =train["label"]
+
+        X_valid_1 = valid[columns]
+        y_valid_1 =valid["label"]
+
+        X_test_1 =test[columns]
+        y_test_1 =test["label"]
+    elif key=="codalab":
+        train = dff.loc[dff["split_Sementic"]=="train"]
+        valid = dff.loc[dff["split_Sementic"]=="val"]
+        test = dff.loc[dff["split_Sementic"]=="test"]
+
+        X_train_1 = train[columns]
+        y_train_1 =train["label"]
+
+        X_valid_1 = valid[columns]
+        y_valid_1 =valid["label"]
+
+        X_test_1 =test[columns]
+        y_test_1 =test["label"]
+
+    else:
+        X_train_1, y_train_1, X_valid_1, y_valid_1, X_test_1, y_test_1 = train_valid_test_split(dff[columns+["label"]], target = 'label', train_size, valid_size, test_size)
+
+    X_train_1 = X_train_1.to_numpy().tolist()
+    y_train_1 = y_train_1.to_numpy().tolist()
+
+    X_valid_1 = X_valid_1.to_numpy().tolist()
+    y_valid_1 = y_valid_1.to_numpy().tolist()
+
+    X_test_1 = X_test_1.to_numpy().tolist()
+    y_test_1 = y_test_1.to_numpy().tolist()
+
+    for i in range (len(X_train_1)):
+        list_str = str(X_train_1[i]).replace("[", "").replace("]", "")
+        X_train_1[i] = eval(f"[{list_str}]")
+    X_train_1 = np.array(X_train_1)
+    y_train_1 = np.array(y_train_1)
+
+    for i in range (len(X_valid_1)):
+        list_str = str(X_valid_1[i]).replace("[", "").replace("]", "")
+        X_valid_1[i] = eval(f"[{list_str}]")
+    X_valid_1 = np.array(X_valid_1)
+    y_valid_1 = np.array(y_valid_1)
+
+    for i in range (len(X_test_1)):
+        list_str = str(X_test_1[i]).replace("[", "").replace("]", "")
+        X_test_1[i] = eval(f"[{list_str}]")
+    X_test_1 = np.array(X_test_1)
+    y_test_1 = np.array(y_test_1)
+
+    return (X_train_1,X_valid_1,X_test_1,y_train_1,y_valid_1,y_test_1)
