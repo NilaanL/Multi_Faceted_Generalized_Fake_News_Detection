@@ -38,10 +38,18 @@ tqdm.pandas()
 
 """
 
-WELFAKE_PATH = ""  # Path to the WELFake corpus
-STOPWORDS_PATH = ""  # Path to SMART stopwords list
-LEXICON_SAVE_PATH = ""  # Path to save the generated lexicon with scores
-TOP_WORDS = 3000  # The number of top words to consider while creating the lexicon
+# Path to the WELFake corpus
+WELFAKE_PATH = ""  
+
+# Path to SMART stopwords list
+STOPWORDS_PATH = ""  
+
+# Path to save the generated lexicon with scores
+LEXICON_SAVE_PATH = "" 
+ 
+# The number of top words to consider while creating the lexicon
+TOP_WORDS = 3000  
+
 # Should stopwords be removed before lexicon creation, if set to True will take more time
 REMOVE_STOPWORDS = False
 
@@ -219,16 +227,16 @@ df_fake["total_text_lemmatized"] = df_fake["total_text"].parallel_apply(
 
 
 def createLexicon(df_true, df_fake, top_words, remove_stop):
-  """[summary]
+  """[Create the lexicon using the true and fake corpus]
 
   Args:
-      df_true ([type]): [description]
-      df_fake ([type]): [description]
-      top_words ([type]): [description]
-      remove_stop (bool, optional): [description]. Defaults to False.
+      df_true ([DataFrame])
+      df_fake ([DataFrame])
+      top_words ([list]): [How many words should be taken]
+      remove_stop (bool, optional): [Whether to remove stopwords]. Defaults to False.
 
   Returns:
-      [type]: [description]
+      [DataFrame]
   """
 
   true_data = df_true['total_text_lemmatized'].tolist()
