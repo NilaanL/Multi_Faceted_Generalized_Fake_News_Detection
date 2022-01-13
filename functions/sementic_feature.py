@@ -74,7 +74,7 @@ def num_chars(text):
     '''(str) -> number    #**TypeContract**
     returns the number of characters in a text.  #**Description**
     '''
-  return len(text)
+    return len(text)
 # -------------------------------------------------------------------------------
 
 #get url count
