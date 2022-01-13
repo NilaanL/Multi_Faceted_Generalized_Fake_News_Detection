@@ -1,0 +1,1 @@
+Extracted sementic , sentiment , lexicon and embedding features 
