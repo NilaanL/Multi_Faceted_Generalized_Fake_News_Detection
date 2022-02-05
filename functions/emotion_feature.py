@@ -111,6 +111,9 @@ def dict_to_result(emotion_dict):
 # result = emotion_candidates_recognition('That was good',1)
 # x = dict_to_result(result)
 
+def change_string_dict(emotion_str):
+  res = ast.literal_eval(emotion_str)
+  return res
 
 
 def load_lexicon_embedding(embedding,graph_path):

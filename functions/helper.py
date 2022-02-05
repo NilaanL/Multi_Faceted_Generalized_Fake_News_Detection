@@ -7,6 +7,7 @@ from sklearn.feature_selection import RFECV
 from sklearn.model_selection import StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
+import torch
 
 def write_to_pickle(Pkl_File_path,model):
   with open(Pkl_File_path, 'wb') as file:  
@@ -101,7 +102,7 @@ def compare_models( X_train, X_val, y_train, y_val,features,dataset_name,classif
 
     return cla_pred
 
-def generate_embeddings(sentences):
+def generate_embeddings(model,sentences):
     """generate embeddings for a list of sentences
 
     Args:
@@ -110,6 +111,8 @@ def generate_embeddings(sentences):
     Returns:
         [list]: List of embeddings
     """
+    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+    model.to(device)   ##to run on gpu
     embeddings = model.encode(sentences=sentences, show_progress_bar=True)
     embeddings=[torch.from_numpy(item) for item in embeddings]
     
@@ -134,14 +137,13 @@ def get_train_valid_test_split(dataframe,key,columns,train_size=0.7,valid_size=0
     Returns:
         [list]: List of train,validation and test dataframes
     """
-  # print(dataframe.columns)
+#   print(dataframe.columns)
 #   columns=['fake_score', 'true_score', 'common_score',
 #               'joy', 'fear', 'disgust', 'anticipation', 'anger', 'sadness', 'surprise', 'trust',
 #               'url_count', 'qn_symbol', 'num_chars', 'num_words', 'num_sentences', 'words_per_sentence', 'characters_per_word', 
 #               'punctuations_per_sentence', 'num_exclamation', 'get_sentiment_polarity', 'lexical_diversity', 'content_word_diversity',
 #               'redundancy', 'noun', 'verb', 'adj', 'adv', 'qn_symbol_per_sentence', 'num_exclamation_per_sentence',
 #               'url_count_per_sentence', 'embedding']
-
     dff=dataframe
     if key=="liar":
         train = dff.loc[dff["split_Sementic"]=="train"]
@@ -201,3 +203,12 @@ def get_train_valid_test_split(dataframe,key,columns,train_size=0.7,valid_size=0
     y_test_1 = np.array(y_test_1)
 
     return (X_train_1,X_valid_1,X_test_1,y_train_1,y_valid_1,y_test_1)
+
+
+#Mean Pooling - Take attention mask into account for correct averaging
+def mean_pooling(model_output, attention_mask):
+    token_embeddings = model_output[0] #First element of model_output contains all token embeddings
+    input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
+    sum_embeddings = torch.sum(token_embeddings * input_mask_expanded, 1)
+    sum_mask = torch.clamp(input_mask_expanded.sum(1), min=1e-9)
+    return sum_embeddings / sum_mask
