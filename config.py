@@ -46,46 +46,58 @@ dataset_path={
     # "kaggle":"/datasets/Kaggle/Kaggle.csv",
     "kagglerealfake":"/datasets/Kaggle_real_fake/fake_or_real_news.csv",    
     "liar": "/datasets/LIAR/Liar_all.csv",
-    "politifact":"/datasets/Politifact/Politifact.tsv",
-    "welfake":"/datasets/WELFAKE/WELFake.csv"
+    # "politifact":"/datasets/Politifact/Politifact.tsv",
+    # "welfake":"/datasets/WELFAKE/WELFake.csv"
 }
 
 feature_result_path={
     "codalab":
-        [
-        "/features/CodaLab Covid/CodaLab_lexicon.csv",
-        "/features/CodaLab Covid/CodaLab_sementic.csv",
-        "/features/CodaLab Covid/CodaLab_emotions.csv"
-        ],
+        {
+        "lexicon" :"/features/CodaLab Covid/CodaLab_lexicon.csv",
+        "semantic":"/features/CodaLab Covid/CodaLab_sementic.csv",
+        "emotion" :"/features/CodaLab Covid/CodaLab_emotions.csv",
+        "embedding" : "/features/CodaLab Covid/CodaLab_embedding.csv"
+        },
     "fakenewsnet" :
-        [
-        "/features/FakeNewsNet/FakeNewsNet_lexicon.csv",
-        "/features/FakeNewsNet/FakeNewsNet_sementic.csv",
-        "/features/FakeNewsNet/FakeNewsNet_emotions.csv"
-        ],
+        {
+        "lexicon"  :"/features/FakeNewsNet/FakeNewsNet_lexicon.csv",
+        "semantic" :"/features/FakeNewsNet/FakeNewsNet_sementic.csv",
+        "emotion"  : "/features/FakeNewsNet/FakeNewsNet_emotions.csv",
+        "embedding" :"/features/FakeNewsNet/FakeNewsNet_embedding.csv"
+        },
     "isot":
-        [
-        "/features/ISOT/ISOT_lexicon.csv",
-        "/features/ISOT/ISOT_sementic.csv",
-        "/features/ISOT/ISOT_emotions.csv"
-        ],
+        {
+        "lexicon"   : "/features/ISOT/ISOT_lexicon.csv",
+        "semantic"  : "/features/ISOT/ISOT_sementic.csv",
+        "emotion"   : "/features/ISOT/ISOT_emotions.csv",
+        "embedding" : "/features/ISOT/ISOT_embedding.csv"
+        },
     # "kaggle" :["","/features/Kaggle/Kaggle_sementic.csv","/features/Kaggle/Kaggle_predictions_emotions.csv"],
     "kagglerealfake":
-        [
-        "/features/Kaggle_real_fake/Kaggle_real_fake_lexicon.csv",
-        "/features/Kaggle_real_fake/Kaggle_real_fake_sementic.csv",
-        "/features/Kaggle_real_fake/Kaggle_real_fake_emotions.csv"
-        ],
+        {
+        "lexicon"  :"/features/Kaggle_real_fake/Kaggle_real_fake_lexicon.csv",
+        "semantic" :"/features/Kaggle_real_fake/Kaggle_real_fake_sementic.csv",
+        "emotion"  : "/features/Kaggle_real_fake/Kaggle_real_fake_emotions.csv",
+        "embedding" : "/features/Kaggle_real_fake/Kaggle_real_fake_embedding.csv"
+        },
     "liar":
-        ["/features/LIAR/Liar_lexicon.csv",
-        "/features/LIAR/Liar_sementic.csv",
-        "/features/LIAR/LIAR_emotions.csv"
-        ],
+        {
+        "lexicon"   : "/features/LIAR/Liar_lexicon.csv",
+        "semantic"  : "/features/LIAR/Liar_sementic.csv",
+        "emotion"   : "/features/LIAR/LIAR_emotions.csv" ,
+        "embedding" : "/features/LIAR/LIAR_embedding.csv"
+        },
     # "politifact":["","/features/Politifact/Politifact_sementic.csv","/features/Politifact/Politifact_predictions_emotions.csv"],
-    "welfake":
-        [
-        "/features/Welfake/Welfake_lexicon.csv",
-        "/features/Welfake/Welfake_sementic.csv",
-        "/features/Welfake/WelFake_emotions.csv"
-        ]
+    
+    # "welfake":
+    #     {
+    #     "lexicon" :"/features/Welfake/Welfake_lexicon.csv",
+    #     "semantic":"/features/Welfake/Welfake_sementic.csv",
+    #     "emotion" : "/features/Welfake/WelFake_emotions.csv",
+    #     "embedding":  "/features/Welfake/WelFake_embedding.csv"
+    #     }
 }
+ID={"codalab":"id", "fakenewsnet":"id_1", "isot":"id", "kaggle":"id","kagglerealfake":"id", "liar":"ID", "politifact":"claim_id", "welfake":"id"}
+LABEL={"codalab":"label", "fakenewsnet":"label", "isot":"label", "kaggle":"label","kagglerealfake":"label","liar":"label", "politifact":"cred_label", "welfake":"label"}
+FEATURES=["lexicon","sementic","sentiment","embedding"]
+TEXT={"codalab":"tweet", "fakenewsnet":"title", "isot":"text", "kaggle":"text","kagglerealfake":"text", "liar":"statement", "politifact":"text", "welfake":"text"}
