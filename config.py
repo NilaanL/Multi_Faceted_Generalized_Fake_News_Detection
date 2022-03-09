@@ -40,14 +40,14 @@ Sentiment_features= [
 All_features=sementic_features+LangMod_Features+Sentiment_features
 
 dataset_path={
-    "codalab": "/datasets/CodaLab Covid/Constraint_English_All.csv",
-    "fakenewsnet":"/datasets/FakeNewsNet/FakeNewsNet_All.csv",
-    "isot":"/datasets/ISOT/ISOT.csv",
-    # "kaggle":"/datasets/Kaggle/Kaggle.csv",
-    "kagglerealfake":"/datasets/Kaggle_real_fake/fake_or_real_news.csv",    
-    "liar": "/datasets/LIAR/Liar_all.csv",
-    # "politifact":"/datasets/Politifact/Politifact.tsv",
-    # "welfake":"/datasets/WELFAKE/WELFake.csv"
+    "codalab": "/Datasets/CodaLab Covid/Constraint_English_All.csv",
+    "fakenewsnet":"/Datasets/FakeNewsNet/FakeNewsNet_All.csv",
+    "isot":"/Datasets/ISOT/ISOT.csv",
+    # "kaggle":"/Datasets/Kaggle/Kaggle.csv",
+    "kagglerealfake":"/Datasets/Kaggle_real_fake/fake_or_real_news.csv",    
+    "liar": "/Datasets/LIAR/Liar_all.csv",
+    # "politifact":"/Datasets/Politifact/Politifact.tsv",
+    # "welfake":"/Datasets/WELFAKE/WELFake.csv"
 }
 
 feature_result_path={
