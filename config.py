@@ -20,13 +20,14 @@ sementic_features= [
                     "num_exclamation_per_sentence",
                     "url_count_per_sentence"
                     ]
+
 LangMod_Features=   [
                      'fake_score', 
                     'true_score', 
                     'common_score'
                     ]
 
-Sentiment_features= [
+Emotion_features= [
                     #  'highest_eight_label', 
                     'anger', 
                     'anticipation',
@@ -37,7 +38,10 @@ Sentiment_features= [
                     'surprise', 
                     'trust'
                     ]
-All_features=sementic_features+LangMod_Features+Sentiment_features
+
+Embed_features= ["embd_true","embd_fake"]
+
+All_features=sementic_features+LangMod_Features+Emotion_features+Embed_features 
 
 dataset_path={
     "codalab": "/Datasets/CodaLab Covid/Constraint_English_All.csv",
@@ -54,45 +58,45 @@ feature_result_path={
     "codalab":
         {
         "lexicon" :"/features/CodaLab Covid/CodaLab_lexicon.csv",
-        "semantic":"/features/CodaLab Covid/CodaLab_sementic.csv",
+        "semantic":"/features/CodaLab Covid/CodaLab_semantic.csv",
         "emotion" :"/features/CodaLab Covid/CodaLab_emotions.csv",
         "embedding" : "/features/CodaLab Covid/CodaLab_embedding.csv"
         },
     "fakenewsnet" :
         {
         "lexicon"  :"/features/FakeNewsNet/FakeNewsNet_lexicon.csv",
-        "semantic" :"/features/FakeNewsNet/FakeNewsNet_sementic.csv",
+        "semantic" :"/features/FakeNewsNet/FakeNewsNet_semantic.csv",
         "emotion"  : "/features/FakeNewsNet/FakeNewsNet_emotions.csv",
         "embedding" :"/features/FakeNewsNet/FakeNewsNet_embedding.csv"
         },
     "isot":
         {
         "lexicon"   : "/features/ISOT/ISOT_lexicon.csv",
-        "semantic"  : "/features/ISOT/ISOT_sementic.csv",
+        "semantic"  : "/features/ISOT/ISOT_semantic.csv",
         "emotion"   : "/features/ISOT/ISOT_emotions.csv",
         "embedding" : "/features/ISOT/ISOT_embedding.csv"
         },
-    # "kaggle" :["","/features/Kaggle/Kaggle_sementic.csv","/features/Kaggle/Kaggle_predictions_emotions.csv"],
+    # "kaggle" :["","/features/Kaggle/Kaggle_semantic.csv","/features/Kaggle/Kaggle_predictions_emotions.csv"],
     "kagglerealfake":
         {
         "lexicon"  :"/features/Kaggle_real_fake/Kaggle_real_fake_lexicon.csv",
-        "semantic" :"/features/Kaggle_real_fake/Kaggle_real_fake_sementic.csv",
+        "semantic" :"/features/Kaggle_real_fake/Kaggle_real_fake_semantic.csv",
         "emotion"  : "/features/Kaggle_real_fake/Kaggle_real_fake_emotions.csv",
         "embedding" : "/features/Kaggle_real_fake/Kaggle_real_fake_embedding.csv"
         },
     "liar":
         {
         "lexicon"   : "/features/LIAR/Liar_lexicon.csv",
-        "semantic"  : "/features/LIAR/Liar_sementic.csv",
+        "semantic"  : "/features/LIAR/Liar_semantic.csv",
         "emotion"   : "/features/LIAR/LIAR_emotions.csv" ,
         "embedding" : "/features/LIAR/LIAR_embedding.csv"
         },
-    # "politifact":["","/features/Politifact/Politifact_sementic.csv","/features/Politifact/Politifact_predictions_emotions.csv"],
+    # "politifact":["","/features/Politifact/Politifact_semantic.csv","/features/Politifact/Politifact_predictions_emotions.csv"],
     
     # "welfake":
     #     {
     #     "lexicon" :"/features/Welfake/Welfake_lexicon.csv",
-    #     "semantic":"/features/Welfake/Welfake_sementic.csv",
+    #     "semantic":"/features/Welfake/Welfake_semantic.csv",
     #     "emotion" : "/features/Welfake/WelFake_emotions.csv",
     #     "embedding":  "/features/Welfake/WelFake_embedding.csv"
     #     }

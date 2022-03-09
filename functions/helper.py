@@ -8,6 +8,7 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
 import torch
+import config.py
 
 def write_to_pickle(Pkl_File_path,model):
   with open(Pkl_File_path, 'wb') as file:  
@@ -33,6 +34,46 @@ def compute_metrics(pred,ground_labels):
         'confusiton_mat': confusion_mat
       }
     return out_dict
+
+# mapping of the labels to 0,1 
+def label_map(x): 
+  if x in ['true', 'mostly-true', 'half-true', 'real', 'Real', 0, 'REAL']:
+    return 0
+  elif x in ['false', 'pants-fire', 'barely-true', 'fake', 'Fake', 1, 'FAKE']:
+    return 1
+  else:return x
+
+
+def normalize(dataFrame,features , parameterDict={}):
+  dataframe=dataFrame.copy()
+  for column in dataframe[features].columns.tolist():
+    Q1=dataframe[column].quantile(0.25)
+    Q3=dataframe[column].quantile(0.75)
+
+    IQR=(Q3-Q1)
+    minV=Q1 - 1.5*IQR
+    maxV=Q3 + 1.5*IQR
+
+
+    temp=dataframe[column].copy()
+  
+    if ( column not in ["qn_symbol_per_sentence" , "num_exclamation_per_sentence" ,"lexical_diversity" ,"url_count_per_sentence"] ) :
+      dataframe[column]=dataframe[column].apply(lambda x:minV if x< minV else maxV if x>maxV else x)
+
+      mean = dataframe[column].mean()
+      std  = dataframe[column].std() 
+
+      try:
+        dataframe[column]=dataframe[column].apply(lambda x:  (x-mean)/std )
+      except:
+        print(column) 
+
+    else:
+      dataframe[column]=dataframe[column].apply(lambda x : 1 if x>0 else 0)
+      # print("col",column)
+  return dataframe
+
+
 
 def rfecv(X_train, X_val, y_train, y_val,key,results):
     clf=RandomForestClassifier(n_estimators=100,max_features='auto',random_state=0,max_depth=14,class_weight='balanced')
@@ -137,13 +178,7 @@ def get_train_valid_test_split(dataframe,key,columns,train_size=0.7,valid_size=0
     Returns:
         [list]: List of train,validation and test dataframes
     """
-#   print(dataframe.columns)
-#   columns=['fake_score', 'true_score', 'common_score',
-#               'joy', 'fear', 'disgust', 'anticipation', 'anger', 'sadness', 'surprise', 'trust',
-#               'url_count', 'qn_symbol', 'num_chars', 'num_words', 'num_sentences', 'words_per_sentence', 'characters_per_word', 
-#               'punctuations_per_sentence', 'num_exclamation', 'get_sentiment_polarity', 'lexical_diversity', 'content_word_diversity',
-#               'redundancy', 'noun', 'verb', 'adj', 'adv', 'qn_symbol_per_sentence', 'num_exclamation_per_sentence',
-#               'url_count_per_sentence', 'embedding']
+ 
     dff=dataframe
     if key=="liar":
         train = dff.loc[dff["split_Sementic"]=="train"]
@@ -212,3 +247,84 @@ def mean_pooling(model_output, attention_mask):
     sum_embeddings = torch.sum(token_embeddings * input_mask_expanded, 1)
     sum_mask = torch.clamp(input_mask_expanded.sum(1), min=1e-9)
     return sum_embeddings / sum_mask
+
+
+def predict_for_model(X_val, y_val,features,dataset_name,model,model_name): 
+  # print("-----------"+model_name+"-------------")
+    predicted_y = model.predict(X_val[features])
+    score=compute_metrics(predicted_y,y_val)
+
+    #Prining the evaluation matrix to the console
+    d=score
+    predictionScore.append(d)
+    tn, fp, fn, tp = d["confusiton_mat"].ravel() #correct
+    print ("{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\t{:}\t{:}\t{:}\t{:}\t{:}\t\t\t{:}".format(d['precision'][0],d['precision'][1], d['recall'][0],d['recall'][1],d['f1'][0],d['f1'][1],d['accuracy'],tn, fp, fn, tp,dataset_name,model_name))
+
+def get_all_df_dict(normalize=False ,normalize_feature_list=[])
+    all_df={}
+
+    # for each dataset 
+    for key,value in feature_result_path.items():
+        print("----------",key,"--------------")
+        error=False
+        ID=ID[key]
+        TEXT=TEXT[key]
+        LABEL=LABEL[key]
+
+        # check whether all 4 features are available. 
+        
+        for feature_name,feature_dataset_location in value.items():
+            if feature_dataset_location =="":
+                error=True
+                print("   Error: missing {:} skipping {:}".format(features[v],key))
+                break
+        if (not error):
+            # read each of the 4 features for the dataset 
+            dfLexicon  = pd.read_csv(value["lexicon"])
+            dfSementic = pd.read_csv(value["semantic"])
+            dfSentiment = pd.read_csv(value["emotion"])
+            dfEmbedding = pd.read_csv(value["embedding"])
+
+            # combine the features using inner join 
+
+            dff=dfSentiment.merge(dfSementic, how='inner', on=ID,suffixes=('_Sentiment', '_Sementic'))
+            dff=dff.merge(dfLexicon, how='inner', on=ID,suffixes=('', '_Lexicon'))
+            df=dff.merge(dfEmbedding, how='inner', on=ID,suffixes=('', '_Lexicon'))
+
+            df=df.drop(df.columns[df.columns.str.contains('unnamed',case = False)],axis = 1)
+        
+            df["scores"]=df["scores"].apply(lambda x : list(map(np.float64, x.strip('][').replace('"', '').replace("'","").replace(" ","").split(','))))
+            # df["fake_score"]=df["scores"].apply(lambda x:x[0])
+            # df["true_score"]=df["scores"].apply(lambda x:x[1])
+
+            df["fake_score1"]=df["scores"].apply(lambda x:x[2])
+            df["true_score1"]=df["scores"].apply(lambda x:x[3])
+
+            df["fake_score2"]=df["scores"].apply(lambda x:x[4])
+            df["true_score2"]=df["scores"].apply(lambda x:x[5])
+
+            df=df.loc[df["lang"]=="en"]    # filter only english text 
+            df["label"]=df[LABEL+"_Sementic"]  #set the label coulmn 
+
+            # print(df["label"].value_counts())
+
+            df["label"]=df["label"].apply(label_map)   # converting labels to 0,1 
+        
+            
+            # for codalab and liar include split column as well 
+            if (key=="codalab" or key=="liar"):  
+                df=df[All_features+["label",ID,"split_Sementic"]]
+            else :
+                df=df[All_features+["label",ID,]]
+            
+            #clean 
+            print("null rows : ",df.isnull().any(axis=1).sum())
+            df.replace([np.inf, -np.inf], np.nan, inplace=True)
+            print("inf rows : ",df.isnull().any(axis=1).sum())
+            df.dropna(inplace=True)
+        
+            if (NORMALIZED):
+                all_df[key]=normalize(df,All_features)   # normalize 
+            else:
+                all_df[key]=df.copy(deep=True)        
+    return all_df
